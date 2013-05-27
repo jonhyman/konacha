@@ -3,21 +3,19 @@
 [![Build Status](https://secure.travis-ci.org/jfirebaugh/konacha.png?branch=master)](http://travis-ci.org/jfirebaugh/konacha)
 [![Dependency Status](https://gemnasium.com/jfirebaugh/konacha.png)](https://gemnasium.com/jfirebaugh/konacha)
 
-Konacha is a Rails engine that allows you to test your JavaScript with the
+Konacha ([koh-NAH-cha], a type of green tea) is a Rails engine that allows you to test your JavaScript with the
 [Mocha](http://visionmedia.github.com/mocha/) test framework and [chai](http://chaijs.com/)
 assertion library.
 
-[![Konacha][2]][1]
+[![Konacha in action][2]][1]
 
-  [1]: http://en.wikipedia.org/wiki/Konacha
-  [2]: https://github.com/jfirebaugh/konacha/raw/master/vendor/images/konacha.jpg
+  [1]: http://www.youtube.com/watch?v=heK78M6Ql9Q
+  [2]: https://github.com/jfirebaugh/konacha/raw/master/images/youtube.png
 
 It is similar to [Jasmine](https://github.com/pivotal/jasmine-gem) and
 [Evergreen](https://github.com/jnicklas/evergreen), but does not attempt to be framework
 agnostic. By sticking with Rails, Konacha can take full advantage of features such as
 the asset pipeline and engines.
-
-Photo credit: [FCartegnie](http://commons.wikimedia.org/wiki/File:Konacha.jpg), CC-BY-SA.
 
 ## Installation
 
@@ -132,7 +130,7 @@ To automatically trigger reruns when files change, try [guard-konacha](https://g
 ## Spec Helper
 
 Since Konacha integrates with the asset pipeline, using setup helpers in your specs is
-easy. Just create a `spec_helper.js` or `spec_helper.js.coffee` file in `specs/javascripts`
+easy. Just create a `spec_helper.js` or `spec_helper.js.coffee` file in `spec/javascripts`
 and require it in your tests:
 
 ```javascript
@@ -182,20 +180,25 @@ Konacha can be configured in an initializer, e.g. `config/initializers/konacha.r
 
 ```ruby
 Konacha.configure do |config|
-  config.spec_dir    = "spec/javascripts"
-  config.driver      = :selenium
-  config.stylesheets = %w(application)
+  config.spec_dir     = "spec/javascripts"
+  config.spec_matcher = /_spec\.|_test\./
+  config.driver       = :selenium
+  config.stylesheets  = %w(application)
 end if defined?(Konacha)
 ```
 
 The `defined?` check is necessary to avoid a dependency on Konacha in the production
 environment.
 
-The `spec_dir` option tells Konacha where to find JavaScript specs. `driver`
-names a Capybara driver used for the `run` task (try `:poltergeist`, after
-installing [PhantomJS](https://github.com/jonleighton/poltergeist#installing-phantomjs)).
+The `spec_dir` option tells Konacha where to find JavaScript specs.  `spec_matcher`
+is an object responding to `===` (most likely a `Regexp`); it receives a filename
+and should return true if the file is a spec. `driver` names a Capybara driver used
+for the `run` task (try `:poltergeist`, after installing
+[PhantomJS](https://github.com/jonleighton/poltergeist#installing-phantomjs)).
 The `stylesheets` option sets the stylesheets to be linked from the `<head>`
-of the test runner iframe. The values above are the defaults.
+of the test runner iframe.
+
+The values above are the defaults.
 
 ## Test Interface and Assertions
 
@@ -220,6 +223,12 @@ Konacha has no template (a.k.a. HTML fixture) support of its own. Instead, we su
 Sprocket's built in support for JavaScript template (`.jst`) files. Add a `spec/javascripts/templates`
 directory, place template files there (using any JS template language supported by Sprockets),
 require them in your spec or spec_helper, and render them into the `<body>`.
+
+Note that if you want to use EJS as in the following example, you need to add that gem to your Gemfile:
+
+```ruby
+gem "ejs"
+```
 
 For example, in `spec/javascripts/templates/hello.jst.ejs`:
 

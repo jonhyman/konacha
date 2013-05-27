@@ -6,8 +6,13 @@ describe "konacha/specs/parent" do
   end
 
   it "renders an iframe tag for a spec" do
+    # https://github.com/rails/rails/issues/4364
+    # https://github.com/rspec/rspec-rails/pull/539
+    view.singleton_class.send(:include, Konacha::Engine.routes.url_helpers)
+
     spec = spec_double("a_spec")
     assign(:specs, [spec])
+    assign(:run_mode, "server".inquiry)
 
     render
 

@@ -9,6 +9,18 @@ describe Konacha do
         subject.spec_dir.should == "spec/javascripts"
       end
     end
+
+    describe ".spec_matcher" do
+      it "defaults to /_spec\.|_test\./" do
+        subject.spec_matcher.should == /_spec\.|_test\./
+      end
+    end
+
+    describe ".runner_port" do
+      it "defaults to nil" do
+        subject.runner_port.should == nil
+      end
+    end
   end
 
   describe ".spec_paths" do
@@ -61,6 +73,30 @@ describe Konacha do
 
     it "does not include non-asset files" do
       subject.should_not include("do_not_include_spec.js.bak")
+    end
+
+    describe 'with a custom matcher' do
+      after { Konacha.config.spec_matcher = /_spec\.|_test\./ }
+
+      it "includes *-spec.* files" do
+        Konacha.config.spec_matcher = /-spec\./
+        subject.should include("file-with-hyphens-spec.js")
+      end
+
+      it "includes *.spec.* files" do
+        Konacha.config.spec_matcher = /\.spec\./
+        subject.should include("file.with.periods.spec.js")
+      end
+
+      it "works with any object responding to ===" do
+        Konacha.config.spec_matcher = Module.new do
+          def self.===(path)
+            path == "array_sum_js_spec.js"
+          end
+        end
+        subject.should include("array_sum_js_spec.js")
+        subject.size.should == 1
+      end
     end
   end
 

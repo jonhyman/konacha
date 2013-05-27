@@ -1,6 +1,35 @@
 # master
 
-* Update mocha (1.7.3) and chai (1.4.0)
+# 2.7.0
+
+* Fix semantics of pending event for RSpec reporters (#131, #132)
+* Update chai (1.6.0)
+
+# 2.6.0
+
+* Update mocha (1.9.0) and chai (1.5.0)
+
+# 2.5.1
+
+* Fix several Rails 4 beta compatibility issues.
+
+# 2.5.0
+
+* Made port of the runner configurable
+
+# 2.4.0
+
+* Support requesting files with periods in the name
+* Allow customisation of the spec filename via `spec_matcher` config option
+* Disable mocha's leak detection by default (#80)
+
+# 2.3.0
+
+* Improved support for guard-konacha
+
+# 2.2.0
+
+* Update mocha (1.8.1) and chai (1.4.2)
 
 # 2.1.0
 

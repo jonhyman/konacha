@@ -61,7 +61,7 @@ describe Konacha::Reporter do
 
     it "creates the object" do
       subject.should_receive(:update_or_create_object).with('data', 'type')
-      subject.process_mocha_event({'data' => 'data', 'type' => 'type'})
+      subject.process_mocha_event({'data' => 'data', 'event' => 'test', 'type' => 'type'})
     end
 
     it "calls #process_event with the converted event name" do
@@ -70,26 +70,17 @@ describe Konacha::Reporter do
       subject.should_receive(:process_event).with(:example_started, object)
       subject.process_mocha_event({'event' => 'test', 'type' => 'test'})
     end
+
+    it "calls #process_event twice for pending examples" do
+      object = double('test')
+      subject.stub(:update_or_create_object) { object }
+      subject.should_receive(:process_event).with(:example_started, object)
+      subject.should_receive(:process_event).with(:example_pending, object)
+      subject.process_mocha_event({'event' => 'pending', 'type' => 'test'})
+    end
   end
 
   describe "#process_event" do
-    describe "increments counts" do
-      it "increments example count" do
-        subject.process_event(:example_started)
-        subject.example_count.should == 1
-      end
-
-      it "increments pending count" do
-        subject.process_event(:example_pending)
-        subject.pending_count.should == 1
-      end
-
-      it "increments failed count" do
-        subject.process_event(:example_failed)
-        subject.failure_count.should == 1
-      end
-    end
-
     it "forwards the call on to the formatters" do
       formatter.should_receive(:example_started).with('arg!')
       subject.process_event(:example_started, 'arg!')
@@ -118,6 +109,44 @@ describe Konacha::Reporter do
       suite = subject.update_or_create_object({'fullTitle' => 'suite'}, 'suite')
       object = subject.update_or_create_object({'fullTitle' => 'suite awesome', 'parentFullTitle' => 'suite'}, 'test')
       object.parent.should == suite
+    end
+  end
+
+  describe "#passed?" do
+    it 'passes if failure count is zero' do
+      subject.should be_passed
+    end
+
+    it 'does not pass if failure count is not zero' do
+      subject.stub(:failure_count => 1)
+      subject.should_not be_passed
+    end
+  end
+
+  context "counters" do
+    describe "#example_count" do
+      it "is 0 by default" do
+        subject.example_count.should be_zero
+      end
+
+      it "returns examples count" do
+        subject.stub(:examples => {:omg => :two, :examples => :wow})
+        subject.example_count.should == 2
+      end
+    end
+
+    describe "#pending_count" do
+      it "returns pending examples count" do
+        subject.stub(:examples => {:first => double(:pending? => true), :second => double(:pending? => false)})
+        subject.pending_count.should == 1
+      end
+    end
+
+    describe "#failure_count" do
+      it "returns failed examples count" do
+        subject.stub(:examples => {:first => double(:failed? => true), :second => double(:failed? => false)})
+        subject.failure_count.should == 1
+      end
     end
   end
 end
