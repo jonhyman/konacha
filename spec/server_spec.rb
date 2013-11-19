@@ -59,6 +59,6 @@ describe Konacha::Server, :type => :feature do
   it "supports sinon and sinon-chai" do
     visit "/sinonjs"
     page.should have_content("with sinon and sinon-chai inside 'it'")
-    page.should have_css(".test.pass", :count => 2)
+    page.should have_css(".test.pass", :count => 3)
   end
 end
