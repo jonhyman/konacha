@@ -1,6 +1,10 @@
 # billmag/konacha fork
 
-Greetings! This fork of konacha provides support for using konacha along with requirejs and requirejs-rails.
+Greetings! This fork of konacha provides support for using konacha along with requirejs and requirejs-rails. I will try to keep it up to date as jfirebaugh releases new versions at the original repository. In the past, I've also occasionally gotten ahead of the original repository as new versions of dependent libraries have come out, but no guarantees.
+
+This fork is not published as a gem and relies on some gems that haven't been very diligent about updating their own versions. Thus, some of this fork's dependencies are referred to by their github address, and you'll need to refer to this fork by its github location.
+
+The library also adds sinon and sinon-chai to make your unit testing life easier when you're using it. What follows is an unedited copy of the original README for this project.
 
 # Konacha
 
