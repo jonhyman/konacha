@@ -1,3 +1,7 @@
+# billmag/konacha fork
+
+Greetings! This fork of konacha provides support for using konacha along with requirejs and requirejs-rails.
+
 # Konacha
 
 [![Build Status](https://secure.travis-ci.org/jfirebaugh/konacha.png?branch=master)](http://travis-ci.org/jfirebaugh/konacha)
