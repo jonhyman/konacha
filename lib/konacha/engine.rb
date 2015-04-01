@@ -1,5 +1,5 @@
 module Konacha
-  class Engine < Rails::Engine
+  class Engine < ::Rails::Engine
     # Do not mess up the application's namespace.
     # http://api.rubyonrails.org/classes/Rails/Engine.html#label-Isolated+Engine
     isolate_namespace Konacha
@@ -36,14 +36,18 @@ module Konacha
       options.spec_dir     ||= "spec/javascripts"
       options.spec_matcher ||= /_spec\.|_test\./
       options.port         ||= 3500
+      options.host         ||= 'localhost'
       options.application  ||= self.class.application(app)
       options.driver       ||= :selenium
       options.stylesheets  ||= %w(application)
+      options.javascripts  ||= %w(chai konacha/iframe)
       options.verbose      ||= false
       options.runner_port  ||= nil
       options.formatters   ||= self.class.formatters
 
-      app.config.assets.paths << app.root.join(options.spec_dir).to_s
+      spec_dirs = [options.spec_dir].flatten
+      app.config.assets.paths += spec_dirs.map{|d| app.root.join(d).to_s}
+      app.config.assets.raise_runtime_errors = false
     end
   end
 end

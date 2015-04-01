@@ -1,5 +1,33 @@
 # master
 
+# 3.3.0
+
+* Allow multiple spec_dir entries (#187)
+
+# 3.2.5
+
+* Better Rails 4.1 compatibility (#178)
+
+# 3.2.4
+
+* Only use colors when output is a tty (#179)
+
+# 3.2.3
+
+* Rails 4.1 compatibility (#178)
+
+# 3.2.2
+
+* Override mocha links to utilize the konacha path parameter (#168)
+
+# 3.2.1
+
+* Update chai (1.9.1)
+
+# 3.2.0
+
+* Allow configuration of loaded javascript files (#167)
+
 # 3.1.0
 
 * Update mocha (1.17.1) and chai (1.9.0)
