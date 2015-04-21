@@ -37,10 +37,10 @@ module Konacha
 
     def spec_paths
       spec_root.flat_map do |root|
-        Rails.application.assets.each_entry(root).find_all { |pathname|
+        Rails.application.assets.each_file.find_all { |path|
+          pathname = Pathname.new(path)
           config.spec_matcher === pathname.basename.to_s &&
-          (pathname.extname == '.js' || Tilt[pathname]) &&
-          Rails.application.assets.content_type_of(pathname) == 'application/javascript'
+          (pathname.extname == '.js' || Tilt[pathname])
         }.map { |pathname|
           pathname.to_s.gsub(File.join(root, ''), '')
         }.sort
