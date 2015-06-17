@@ -11,7 +11,7 @@ module Konacha
 
     def serve
       puts "Your tests are here:"
-      puts "  http://localhost:#{port}/"
+      puts "  http://#{host}:#{port}/"
       self.mode = :server
       Konacha::Server.start
     end
@@ -29,20 +29,36 @@ module Konacha
       yield config
     end
 
-    delegate :port, :spec_dir, :spec_matcher, :application, :driver, :runner_port, :formatters, :to => :config
+    delegate :host, :port, :spec_dir, :spec_matcher, :application, :driver, :runner_port, :formatters, :to => :config
 
     def spec_root
-      File.join(Rails.root, config.spec_dir)
+      [config.spec_dir].flatten.map {|d| File.join(Rails.root, d)}
     end
 
     def spec_paths
-      Rails.application.assets.each_entry(spec_root).find_all { |pathname|
-        config.spec_matcher === pathname.basename.to_s &&
-        (pathname.extname == '.js' || Tilt[pathname]) &&
-        Rails.application.assets.content_type_of(pathname) == 'application/javascript'
-      }.map { |pathname|
-        pathname.to_s.gsub(File.join(spec_root, ''), '')
-      }.sort
+      spec_root.flat_map do |root|
+        # Support Sprockets 2.x
+        if Rails.application.assets.respond_to?(:each_entry)
+          paths = Rails.application.assets.each_entry(root).find_all { |pathname|
+            config.spec_matcher === pathname.basename.to_s &&
+            (pathname.extname == '.js' || Tilt[pathname]) &&
+            Rails.application.assets.content_type_of(pathname) == 'application/javascript'
+          }
+        # Sprockets 3
+        elsif Rails.application.assets.respond_to?(:each_file)
+          paths = Rails.application.assets.each_file.find_all { |path|
+            pathname = Pathname.new(path)
+            pathname.dirname.to_s.start_with?(root) &&
+              config.spec_matcher === pathname.basename.to_s &&
+              (pathname.extname == '.js' || Tilt[pathname])
+          }
+        else
+          raise NotImplementedError.new("Konacha is not compatible with the version of Sprockets used by your application.")
+        end
+        paths.map { |pathname|
+          pathname.to_s.gsub(File.join(root, ''), '')
+        }.sort
+      end
     end
   end
 end
