@@ -12,7 +12,7 @@ The library also adds sinon and sinon-chai to make your unit testing life easier
 [![Dependency Status](https://gemnasium.com/jfirebaugh/konacha.png)](https://gemnasium.com/jfirebaugh/konacha)
 
 Konacha ([koh-NAH-cha], a type of green tea) is a Rails engine that allows you to test your JavaScript with the
-[Mocha](http://visionmedia.github.com/mocha/) test framework and [chai](http://chaijs.com/)
+[Mocha](http://mochajs.org/) test framework and [chai](http://chaijs.com/)
 assertion library.
 
 [![Konacha in action][2]][1]
@@ -102,6 +102,14 @@ first, so your code runs in the correct context.
 
 ![Selecting the test-context frame in Chrome](https://raw.github.com/jfirebaugh/konacha/master/images/frame-select.png)
 
+You can also add the following to your `config/routes.rb` to see the specs run at `/konacha`:
+
+```ruby
+Rails.application.routes.draw do
+  mount Konacha::Engine, at: "/konacha" if defined?(Konacha)
+end
+```
+
 ### Command-Line Runner
 
 To run your tests from the command line, type:
@@ -154,7 +162,7 @@ The `spec_helper` is a good place to set Mocha and Chai options as well, for ins
 
 ```javascript
 // set the Mocha test interface
-// see http://visionmedia.github.com/mocha/#interfaces
+// see http://mochajs.org/#interfaces
 mocha.ui('bdd');
 
 // ignore the following globals during leak detection
@@ -167,7 +175,7 @@ mocha.ignoreLeaks();
 mocha.timeout(5);
 
 // Show stack trace on failing assertion.
-chai.Assertion.includeStack = true;
+chai.config.includeStack = true;
 ```
 
 ## Directives and Asset Bundling
@@ -286,7 +294,7 @@ Run `bundle exec rake` to run the test suite.
 ### Contributing to Mocha and Chai
 
 The Konacha repository includes the
-[Mocha](https://github.com/visionmedia/mocha) and
+[Mocha](https://github.com/mochajs/mocha) and
 [Chai](https://github.com/chaijs/chai) repositories as submodules, so
 you can hack on them directly:
 
@@ -303,12 +311,13 @@ localhost:3500 when you refresh your browser.
 
 You can send pull requests to Mocha and Chai straight out of your submodules.
 
-## License
+## See Also
 
-Copyright (c) 2012 John Firebaugh
+Prior art:
 
-MIT License (see the LICENSE file)
+* [Jasmine](https://github.com/pivotal/jasmine-gem)
+* [Evergreen](https://github.com/jnicklas/evergreen)
 
-Portions: Copyright (c) 2009 Jonas Nicklas, Copyright (c) 20011-2012 TJ Holowaychuk
-<tj@vision-media.ca>, Copyright (c) 2011 Jake Luer <jake@alogicalparadox.com>. See
-LICENSE file for details.
+Similar projects:
+
+* [Teaspoon](https://github.com/modeset/teaspoon)
